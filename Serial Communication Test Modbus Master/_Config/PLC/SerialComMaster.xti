@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.12" ClassName="CNestedPlcProjDef">
+	<Project GUID="{460D046F-0701-4BC3-99CD-064D1EB2B09C}" Name="SerialComMaster" PrjFilePath="..\..\SerialComMaster\SerialComMaster.plcproj" TmcFilePath="..\..\SerialComMaster\SerialComMaster.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+		<Instance File="SerialComMaster Instance.xti"/>
+	</Project>
+</TcSmItem>
