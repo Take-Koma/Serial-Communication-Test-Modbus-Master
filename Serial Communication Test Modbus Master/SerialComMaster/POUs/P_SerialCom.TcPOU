@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="P_SerialCom" Id="{b19f171e-24a4-40f9-86b0-32983ede39fc}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM P_SerialCom
+VAR
+	(*テストではパソコンにシリアルポートが無いので未使用
+	fbModbusRtuSlave_PcCOM			:ModbusRtuSlave_PcCOM;
+	*)
+	
+	//テスト用のファンクションブロック
+	fbSerialLineControlADS				:SerialLineControlADS;
+	fbModbusRtuMasterV2_Generic			:ModbusRtuMasterV2_Generic;
+	
+	//テスト用の変数
+	bConnect							:BOOL:=TRUE;
+	stSerialCfg							:ComSerialConfig;
+	RxBuffer							:ComBuffer;
+	TxBuffer							:ComBuffer;
+	bAdsError							:BOOL;
+	nAdsErrorID							:UDINT;	
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//----テスト用のModbus通信---
+	//シリアル接続を設定
+	stSerialCfg.ComPort			:=3;
+	stSerialCfg.Baudrate		:=9600;
+	stSerialCfg.Parity			:=PARITY_NONE;
+	stSerialCfg.DataBits		:=8;
+	stSerialCfg.StopBits		:=STOPBITS_ONE;
+	stSerialCfg.DTR				:=DTR_CTRL_DISABLE;
+	stSerialCfg.RTS				:=RTS_CTRL_DISABLE;
+	stSerialCfg.CTS				:=FALSE;
+	stSerialCfg.DSR				:=FALSE;
+	
+	//USB接続のシリアルポートで通信
+	fbSerialLineControlADS(	Connect		:=bConnect,
+							SerialCfg	:=stSerialCfg,
+							NetId		:='192.168.15.16.1.1',
+							Timeout		:=DEFAULT_ADS_TIMEOUT,
+							TxBuffer	:=TxBuffer,
+							RxBuffer	:=RxBuffer,
+							PortOpened	=>,
+							Error		=>bAdsError,
+							ErrorID		=>nAdsErrorID,
+							Busy		=>,
+							TxBufCount	=>,
+							RxBufCount	=>
+							);
+	
+	//Modbus通信
+	fbModbusRtuMasterV2_Generic.ReadWriteRegs(  UnitID				:=1,
+												Quantity			:=,
+												MBAddr				:=,
+												cbLength			:=,
+												pMemoryAddr			:=,
+												AuxQuantity			:=,
+												AuxMBAddr			:=,
+												AuxcbLength			:=,
+												pAuxMemoryAddr		:=,
+												Execute				:=,
+												Timeout				:=DEFAULT_ADS_TIMEOUT,
+												RxBuffer			:=RxBuffer,
+												TxBuffer			:=TxBuffer,
+												Busy				=>,
+												Error				=>,
+												ErrorId				=>,
+												cbRead				=>
+												);]]></ST>
+    </Implementation>
+    <LineIds Name="P_SerialCom">
+      <LineId Id="1" Count="45" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

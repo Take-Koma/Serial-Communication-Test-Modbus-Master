@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
-  <POU Name="MAIN" Id="{d6496037-cfce-48fc-8762-81d880128e45}">
+  <POU Name="MAIN" Id="{d6496037-cfce-48fc-8762-81d880128e45}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 END_VAR
-]]>
-    </Declaration>
+]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[P_SerialCom();]]></ST>
     </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="2" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>
