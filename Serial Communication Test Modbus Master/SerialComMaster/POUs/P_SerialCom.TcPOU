@@ -3,10 +3,6 @@
   <POU Name="P_SerialCom" Id="{b19f171e-24a4-40f9-86b0-32983ede39fc}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM P_SerialCom
 VAR
-	(*テストではパソコンにシリアルポートが無いので未使用
-	fbModbusRtuSlave_PcCOM			:ModbusRtuSlave_PcCOM;
-	*)
-	
 	//テスト用のファンクションブロック
 	fbSerialLineControlADS				:SerialLineControlADS;
 	fbModbusRtuMasterV2_Generic			:ModbusRtuMasterV2_Generic;
@@ -18,19 +14,32 @@ VAR
 	TxBuffer							:ComBuffer;
 	bAdsError							:BOOL;
 	nAdsErrorID							:UDINT;	
+	
+	bStart								:BOOL;
+
+	i									:INT;
 
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[//----テスト用のModbus通信---
+      <ST><![CDATA[//---テスト用変数書き換え---
+	i:=i+1;
+	IF 32767 < i THEN
+		i:=0;
+	END_IF 
+	
+	GVL_SerialCom.Outputs[0]:=INT_TO_WORD(i);
+
+
+//----テスト用のModbus通信---
 	//シリアル接続を設定
 	stSerialCfg.ComPort			:=3;
-	stSerialCfg.Baudrate		:=9600;
-	stSerialCfg.Parity			:=PARITY_NONE;
+	stSerialCfg.Baudrate		:=19200;
+	stSerialCfg.Parity			:=PARITY_EVEN;
 	stSerialCfg.DataBits		:=8;
 	stSerialCfg.StopBits		:=STOPBITS_ONE;
-	stSerialCfg.DTR				:=DTR_CTRL_DISABLE;
-	stSerialCfg.RTS				:=RTS_CTRL_DISABLE;
+	stSerialCfg.DTR				:=DTR_CTRL_HANDSHAKE;
+	stSerialCfg.RTS				:=RTS_CTRL_HANDSHAKE;
 	stSerialCfg.CTS				:=FALSE;
 	stSerialCfg.DSR				:=FALSE;
 	
@@ -51,15 +60,15 @@ END_VAR
 	
 	//Modbus通信
 	fbModbusRtuMasterV2_Generic.ReadWriteRegs(  UnitID				:=1,
-												Quantity			:=,
-												MBAddr				:=,
-												cbLength			:=,
-												pMemoryAddr			:=,
-												AuxQuantity			:=,
-												AuxMBAddr			:=,
-												AuxcbLength			:=,
-												pAuxMemoryAddr		:=,
-												Execute				:=,
+												Quantity			:=120,
+												MBAddr				:=16#0,
+												cbLength			:=240,
+												pMemoryAddr			:=ADR(GVL_SerialCom.Inputs),
+												AuxQuantity			:=120,
+												AuxMBAddr			:=16#800,
+												AuxcbLength			:=240,
+												pAuxMemoryAddr		:=ADR(GVL_SerialCom.Outputs),
+												Execute				:=bStart,
 												Timeout				:=DEFAULT_ADS_TIMEOUT,
 												RxBuffer			:=RxBuffer,
 												TxBuffer			:=TxBuffer,
@@ -70,7 +79,11 @@ END_VAR
 												);]]></ST>
     </Implementation>
     <LineIds Name="P_SerialCom">
-      <LineId Id="1" Count="45" />
+      <LineId Id="58" Count="5" />
+      <LineId Id="55" Count="2" />
+      <LineId Id="1" Count="2" />
+      <LineId Id="48" Count="6" />
+      <LineId Id="11" Count="35" />
     </LineIds>
   </POU>
 </TcPlcObject>
